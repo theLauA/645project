@@ -1,0 +1,42 @@
+create sequence q;
+
+-- All publications from sigmod conference
+create table publication_sigmod(id int primary key, pubkey text, year int, venue text);
+
+select p.k, f.v into R1 from pub p, field f where f.p='year' and p.k=f.k;
+
+select p.k, f.v into R2 from pub p, field f where f.v='SIGMOD Conference' and f.k = p.k;
+
+insert into publication_sigmod(select nextval('q') as id, R2.k as pubkey, cast(R1.v as int), R2.v as venue from R2,R1 where R2.k = R1.k);
+
+drop table r1,r2;
+
+create table author_sigmod(id int primary key, name text, inst text, dom text);
+
+select x.v as author, publication_sigmod.id as pid into R1 from publication_sigmod join field as x on x.k=publication_sigmod.pubkey where x.p='author';
+
+create table authored_sigmod(aid int, pid int);
+
+select Author.id, R1.pid into R2 from R1 join Author on R1.author = Author.name;
+
+insert into Authored_sigmod(select id, pid from R2);
+
+drop table r1,r2;
+
+-- All authors for those publication and all the authored the relation
+select distinct aid into R3 from authored_sigmod;
+
+select Author.id,Author.name,Author.homepage into R4 from R3, Author, where R3.aid = Author.id;
+
+select substring(homepage, position('//' in homepage)+2) as homepage, R4.id,R4.name into R5 from R4 where position('//' in homepage)>0;
+
+select substring(homepage, 1, position('/' in homepage)-1) as homepage, id, name into r6 from r5 where position('/' in homepage)>0;
+
+select homepage, id, name into R7 from R5 where position('/' in homepage)=0;
+
+select trim(homepage) as inst, id, name into R8 from (select * from R6 union all select * from R7) as x;
+
+insert into author_sigmod (select id, name,inst, reverse(left(reverse(inst),position('.' in reverse(inst)))) from R8);
+
+drop sequence q;
+drop table r1,r2,r3,r4,r5,r6,r7,r8;
