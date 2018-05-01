@@ -1,12 +1,12 @@
-create extension tablefunc;
+--create extension tablefunc;
 
-select year, dom, count(*) as num into R1
+select year, dom, count(distinct pid) as paper into R1
 from publication_sigmod,author_sigmod,authored_sigmod
-where publication_sigmod.id = pid and aid=author_sigmod.id and (dom='.edu' or dom='.com') 
+where publication_sigmod.id = pid and aid=author_sigmod.id
 group by year,dom
 having year is not null;
 
-select R2.year, dom, sum(num) as num into R3
+select R2.year, dom, sum(paper) as paper into R3
 from R1, (Select generate_series as year
 	From generate_series(1991,2007)) as R2
 where R1.year >= R2.year and R1.year-R2.year<=4
@@ -14,7 +14,7 @@ group by R2.year, dom;
 
 create table R4 as Select *
 From crosstab(
-	'Select dom, year, num as papers
+	'Select dom, year, paper
 	From R3
 	Order BY 1,2',
 	'Select *
@@ -38,6 +38,6 @@ AS final_result(domain text,
 "2006_2010" int,
 "2007_2011" int);
 
-\copy (select * from R4) to 'figure_1.csv' with CSV HEADER;
+\copy (select * from R4) to 'figure_1_temp.csv' with CSV HEADER;
 
 DROP TABLE R1,R3,R4;
