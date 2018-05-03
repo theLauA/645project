@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS pub_data_country (
 DROP TABLE IF EXISTS pub_data_affiliation;
 CREATE TABLE IF NOT EXISTS pub_data_affiliation (
 	id	integer NOT NULL,
-	name	varchar ( 300 ) NOT NULL,
+	name	varchar ( 300 ),
 	lat	real,
 	lng	real,
 	city	varchar ( 300 ),

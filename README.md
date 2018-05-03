@@ -27,3 +27,17 @@ Import table in this order:
 		publication_authors
 
 Note: Table country and conference are empty
+
+`
+\copy pub_data_author from 'pub_data_author.csv' DELIMITER ',' CSV HEADER
+
+\copy pub_data_country from 'pub_data_country.csv' DELIMITER ',' CSV HEADER
+
+\copy pub_data_publication from 'pub_data_publication.csv' DELIMITER ',' CSV HEADER
+
+\copy pub_data_affiliation from 'pub_data_affiliation.csv' DELIMITER ',' CSV HEADER
+
+\copy pub_data_authoraffiliation from 'pub_data_authoraffiliation.csv' DELIMITER ',' CSV HEADER
+
+\copy pub_data_publication_authors from 'pub_data_publication_authors.csv' DELIMITER ',' CSV HEADER
+`
