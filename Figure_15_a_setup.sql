@@ -15,7 +15,7 @@ insert into pub_data(select * from pub_pods);
 --All PODs paper from publication table
 create table publication_PODS(id int primary key, pubkey text, year int, venue text);
 
-create sequence q 3513;
+create sequence q start with 3513;
 
 select p.k, f.v into R1 from pub p, field f where f.p='year' and p.k=f.k;
 
@@ -32,14 +32,12 @@ create table publication_sub(id int primary key, pubkey text, year int, venue te
 insert into publication_sub(select * from publication_sigmod);
 
 insert into publication_sub(select * from publication_PODS);
---Check
-select * from pub_data where not exists (select * from publication_sub where publication_sub.pubkey=pub_data.pubkey);
 
 --Authored Relation for publication_sb
 create table authored_sub(aid int references author, pid int references publication_sub);
 
-select x.v as author, Publication_sub.id as pid into R1
-from Publication_sub join Field as x on x.k=publication_sub.pubkey
+select x.v as author, p.id as pid into R1
+from Publication_sub p join Field as x on x.k=p.pubkey
 where x.p='author';
 	
 select Author.id as aid, R1.pid into R2
@@ -77,32 +75,32 @@ union all
 select * from R3) as R;
 
 --UK publications
-select R1.id as pid, R1.venue, cast('UK' as text)  as country, city, inst into r_uk
+select R1.id as pid, R1.venue, cast('UK' as text)  as country, city, inst, R1.name as name into r_uk
 from R1 left outer join R4 on R1.pubkey = R4.pubkey and R4.name=R1.name
 where homepage similar to '%.uk(.|/)%' or country='United Kingdom';
 
 --USA
-select R1.id as pid, R1.venue, cast('USA' as text)  as country, city, inst into r_us
+select R1.id as pid, R1.venue, cast('USA' as text)  as country, city, inst, R1.name as name into r_us
 from R1 left outer join R4 on R1.pubkey = R4.pubkey and R4.name=R1.name
 where homepage similar to '%.us(.|/)%' or country='United States';
 --Canada
-select R1.id as pid, R1.venue, cast('Canada' as text)  as country, city, inst into r_ca
+select R1.id as pid, R1.venue, cast('Canada' as text)  as country, city, inst, R1.name as name into r_ca
 from R1 left outer join R4 on R1.pubkey = R4.pubkey and R4.name=R1.name
 where homepage similar to '%.ca(.|/)%' or country='Canada';
 --Hong Kong
-select R1.id as pid, R1.venue, cast('Hong Kong' as text)  as country, city, inst into r_hk
+select R1.id as pid, R1.venue, cast('Hong Kong' as text)  as country, city, inst, R1.name as name into r_hk
 from R1 left outer join R4 on R1.pubkey = R4.pubkey and R4.name=R1.name
 where homepage similar to '%.hk(.|/)%' or country='Hong Kong';
 --Germany
-select R1.id as pid, R1.venue, cast('Germany' as text)  as country, city, inst into r_de
+select R1.id as pid, R1.venue, cast('Germany' as text)  as country, city, inst, R1.name as name into r_de
 from R1 left outer join R4 on R1.pubkey = R4.pubkey and R4.name=R1.name
 where homepage similar to '%.de(.|/)%' or country='Germany';
 --India
-select R1.id as pid, R1.venue, cast('India' as text)  as country, city, inst into r_in
+select R1.id as pid, R1.venue, cast('India' as text)  as country, city, inst, R1.name as name into r_in
 from R1 left outer join R4 on R1.pubkey = R4.pubkey and R4.name=R1.name
 where homepage similar to '%.in(.|/)%' or country='India';
 --Italy
-select R1.id as pid, R1.venue, cast('Italy' as text)  as country, city, inst into r_it
+select R1.id as pid, R1.venue, cast('Italy' as text)  as country, city, inst, R1.name as name into r_it
 from R1 left outer join R4 on R1.pubkey = R4.pubkey and R4.name=R1.name
 where homepage similar to '%.it(.|/)%' or country='Italy';
 
@@ -123,3 +121,4 @@ from(
     select * from r_it
 ) as R;
 
+drop table r1,r2,r3,r4;
