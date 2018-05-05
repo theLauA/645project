@@ -131,19 +131,19 @@ ELSE TRUE END
 )
 where M2.interv is null
 order by -M1.interv DESC
-limit 9;
+limit 50;
 
 create sequence q start with 1;
 select
 nextval('q') as order,
-CASE WHEN c1_name<>'dummy'                      THEN c1_name || ' ' ELSE ''  END ||
-CASE WHEN c2_name<>'dummy' and c1_name<>c2_name THEN c2_name || ' ' ELSE ''  END ||
-CASE WHEN c3_name<>'dummy'                      THEN c3_name || ' ' ELSE ''  END ||
-CASE WHEN c4_name<>'dummy' and c3_name<>c2_name THEN c4_name || ' ' ELSE ''  END ||
-CASE WHEN c1_inst<>'dummy'                      THEN c1_inst || ' ' ELSE ''  END ||
-CASE WHEN c2_inst<>'dummy' and c1_inst<>c2_inst THEN c2_inst || ' ' ELSE ''  END ||
-CASE WHEN c3_inst<>'dummy'                      THEN c3_inst || ' ' ELSE ''  END ||
-CASE WHEN c4_inst<>'dummy' and c3_inst<>c4_inst THEN c4_inst || ' ' ELSE ''  END AS Explation, -interv as interv
+CASE WHEN c1_name<>'dummy'                      THEN 'Name=' || c1_name || ' ' ELSE ''  END ||
+CASE WHEN c2_name<>'dummy' and c1_name<>c2_name THEN 'Name=' || c2_name || ' ' ELSE ''  END ||
+CASE WHEN c3_name<>'dummy'                      THEN 'Name=' || c3_name || ' ' ELSE ''  END ||
+CASE WHEN c4_name<>'dummy' and c3_name<>c4_name THEN 'Name=' || c4_name || ' ' ELSE ''  END ||
+CASE WHEN c1_inst<>'dummy'                      THEN 'Inst=' || c1_inst || ' ' ELSE ''  END ||
+CASE WHEN c2_inst<>'dummy' and c1_inst<>c2_inst THEN 'Inst=' || c2_inst || ' ' ELSE ''  END ||
+CASE WHEN c3_inst<>'dummy'                      THEN 'Inst=' || c3_inst || ' ' ELSE ''  END ||
+CASE WHEN c4_inst<>'dummy' and c3_inst<>c4_inst THEN 'Inst=' || c4_inst || ' ' ELSE ''  END AS Explation, -interv as interv
 from Min_M;
 
 drop sequence q;

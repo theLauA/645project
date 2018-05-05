@@ -4,42 +4,37 @@ from r_uk
 where venue='PODS';
 
 select
-coalesce(country, 'dummy') as country,
 coalesce(city, 'dummy') as city, 
 coalesce(inst, 'dummy') as inst, 
 coalesce(name, 'dummy') as name,
 count(distinct pid) as c2_num into Cube2
 from r_uk
 where venue='PODS'
-group by cube (country,city,inst,name);
+group by cube (city,inst,name);
 --q1
 select count(distinct pid)
 from r_uk 
 where venue='SIGMOD Conference';
 
-select 
-coalesce(country, 'dummy') as country,
+select
 coalesce(city, 'dummy') as city, 
 coalesce(inst, 'dummy') as inst,  
 coalesce(name, 'dummy') as name,
 count(distinct pid) as c1_num into Cube1
 from r_uk
 where venue='SIGMOD Conference'
-group by cube (country,city,inst,name);
+group by cube (city,inst,name);
 
-select 
-coalesce(c1.country,'dummy') as c1_country,
+select
 coalesce(c1.city,'dummy') as c1_city,
 coalesce(c1.inst,'dummy') as c1_inst,
 coalesce(c1.name,'dummy') as c1_name,
-coalesce(c2.country,'dummy') as c2_country,
 coalesce(c2.city,'dummy') as c2_city,
 coalesce(c2.inst,'dummy') as c2_inst,
 coalesce(c2.name,'dummy') as c2_name,
 Cast(coalesce(c1_num,0) as float) as c1_num,
 Cast(coalesce(c2_num,0) as float) as c2_num into M
 from Cube1 c1 full outer join Cube2 c2 on
-c1.country = c2.country and
 c1.city = c2.city and
 c1.inst = c2.inst and
 c1.name = c2.name; 
@@ -54,8 +49,6 @@ create table Min_M as
 select 
 M1.c1_name,
 M1.c2_name,
-M1.c1_country,
-M1.c2_country,
 M1.c1_city,
 M1.c2_city,
 M1.c1_inst,
@@ -66,8 +59,6 @@ on(
 CASE WHEN
 M1.c1_name = M2.c1_name and
 M1.c2_name = M2.c2_name and
-M1.c1_country = M2.c1_country and
-M1.c2_country = M2.c2_country and
 M1.c1_city = M2.c1_city and
 M1.c2_city = M2.c2_city and
 M1.c1_inst = M2.c1_inst and
@@ -77,8 +68,6 @@ ELSE TRUE END
 ) and M1.interv <= M2.interv and (
 (CASE WHEN M2.c1_name<>'dummy' THEN M1.c1_name = M2.c1_name ELSE TRUE END) and
 (CASE WHEN M2.c2_name<>'dummy' THEN M1.c2_name = M2.c2_name ELSE TRUE END) and
-(CASE WHEN M2.c1_country<>'dummy' THEN M1.c1_country = M2.c1_country ELSE TRUE END) and
-(CASE WHEN M2.c2_country<>'dummy' THEN M1.c2_country = M2.c2_country ELSE TRUE END) and
 (CASE WHEN M2.c1_city<>'dummy' THEN M1.c1_city = M2.c1_city ELSE TRUE END) and
 (CASE WHEN M2.c2_city<>'dummy' THEN M1.c2_city = M2.c2_city ELSE TRUE END) and
 (CASE WHEN M2.c1_inst<>'dummy' THEN M1.c1_inst = M2.c1_inst ELSE TRUE END) and
@@ -93,8 +82,6 @@ select
 nextval('q') as order,
 CASE WHEN c1_name<>'dummy'                               THEN 'NAME='|| c1_name || ' ' ELSE ''  END ||
 CASE WHEN c2_name<>'dummy' and c1_name<>c2_name          THEN 'NAME='|| c2_name || ' ' ELSE ''  END ||
-CASE WHEN c1_country<>'dummy'                            THEN 'Country=' || c1_country || ' ' ELSE ''  END ||
-CASE WHEN c2_country<>'dummy' and c1_country<>c2_country THEN 'Country=' || c2_country || ' ' ELSE ''  END ||
 CASE WHEN c1_city<>'dummy'                               THEN 'City=' || c1_city || ' ' ELSE ''  END ||
 CASE WHEN c2_city<>'dummy' and c1_city<>c2_city          THEN 'City=' || c2_city || ' ' ELSE ''  END ||
 CASE WHEN c1_inst<>'dummy'                               THEN 'Inst=' || c1_inst || ' ' ELSE ''  END ||

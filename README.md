@@ -1,5 +1,17 @@
 # 645project
 
+## Objective
+
+Reproduce Figure 2 and Figure 15b in paper
+`
+Roy, S., & Suciu, D. (2014). A formal approach to finding explanations for database queries. Proceedings of the 2014 ACM SIGMOD International Conference on Management of Data - SIGMOD 14. doi:10.1145/2588555.2588578
+`
+
+## Assume You have imported dblp and geodblp databases
+
+Run Figure_1_setup.sql then Figure_2.sql to reproduce Figure 2 in paper
+
+Run Figure_15_a_setup.sql than Figure_15_b.sql to reproduce Figure 15b in paper
 ## How to import geodblp.db
 
 Install sqlitebroswer from http://sqlitebrowser.org/
